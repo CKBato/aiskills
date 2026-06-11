@@ -12,8 +12,8 @@ description: >-
   dev.azure.com PR links,
   requests to review PRs,
   Tuesday/Thursday batch review of all Active PRs in Traffix Medallion,
-  Traffix Medallion project-wide PR sweeps, or daily morning Cursor
-  Automations batch review at 8:00am.
+  Traffix Medallion project-wide PR sweeps, or daily local scheduled batch
+  review at 8:00am via cron/Task Scheduler and the Cursor agent CLI.
 disable-model-invocation: false
 ---
 
@@ -75,7 +75,7 @@ If they name another org/project, use theirs instead.
 - **Single-PR mode:** one pull request end-to-end.
 - **Batch mode (e.g. Tuesday / Thursday):** list **all Active** PRs in Traffix Medallion (across repos), then run **single-PR mode** for each. Work in repository order returned by the API; paginate with `top` / `skip` if there are more than 100 PRs.
 
-Cursor does not run on a calendar by itself in a normal chat — use **Cursor Automations** (see below) for a daily schedule, or on Tuesdays/Thursdays start a chat and invoke this workflow manually (or rely on auto-invocation from the skill description).
+Cursor does not run on a calendar by itself in a normal chat — use **local scheduling** (see below) for weekday mornings, or on Tuesdays/Thursdays start a chat and invoke this workflow manually (or rely on auto-invocation from the skill description).
 
 ## Preconditions
 
@@ -355,35 +355,83 @@ Optional duplicate under **Cursor → Settings → Rules → User Rules** if you
 When I ask to review Azure DevOps (ADO) pull requests, paste a dev.azure.com PR link, or mention Traffix Medallion PRs, follow the skill ado-universal-pr-review: use user-ado MCP; always map Jira from PR description/title when present, fetch the ticket via user-atlassian MCP, and cross-check ticket requirements against the PR diff (and related repo artifacts) before choosing Approval recommendation; include a Jira requirements fit table and tie Why (recommendation) to that fit in every ADO overview; post overview with Approval recommendation, Gold FK/surrogate-key check for gold notebooks (**Fail on missing coalesce(...,-1) on *_key outputs = Not Approved hard gate, including bridge tables**), semantic model guardrails when applicable (**ado-semantic-model-pr-review**; **Fail on placeholder/missing `.platform` `logicalId` e.g. `00000000-…` = Not Approved hard gate**), Critical/high issues; default project Traffix Medallion when not specified; post on the PR unless chat-only; for Approved or Approved with follow-ups also post a short requirements-fit comment on the mapped Jira ticket; do not cast ADO votes unless I ask.
 ```
 
-## Daily morning automation (Cursor Automations — recommended)
+## Daily morning automation (local — recommended)
 
-Use a **scheduled Cursor Automation** to batch-review every Active PR each weekday morning without starting a chat manually.
+Run the batch on your machine each weekday at 8:00am using the **Cursor agent CLI** (`agent -p`) plus **cron** (macOS/Linux) or **Task Scheduler** (Windows). This uses your local Cursor MCP config (**user-ado**, **user-atlassian**) — no Cloud Agent required.
 
-### Setup (one time)
+### One-time setup
 
-1. Open **[cursor.com/automations](https://cursor.com/automations)** (or **Agents → Automations** in the IDE).
-2. **New automation → Blank** (or duplicate an existing ADO review automation if you have one).
-3. **Trigger:** Scheduled
-   - **Weekdays 8:00am:** cron `0 8 * * 1-5` (Mon–Fri)
-   - **Every day 8:00am:** cron `0 8 * * *`
-   - Set **timezone** to your team default (e.g. `America/New_York` for US Eastern).
-4. **Repository:** **No repository** — this workflow uses ADO/Jira MCP only (no code edits or PRs from the agent).
-5. **Tools / MCP:** enable **user-ado** and **user-atlassian** (both must be authenticated in Cursor before the automation runs).
-6. **Prompt:** paste the **Daily batch starter prompt** below.
-7. **Save → Run now** once to verify MCP auth and posting; then leave enabled.
+1. **Install the Cursor agent CLI** (if needed):
+   ```bash
+   curl https://cursor.com/install -fsS | bash
+   ```
+2. **Authenticate once:** run `agent login` (or set `CURSOR_API_KEY` for headless runs).
+3. **Enable MCP in Cursor:** **user-ado** and **user-atlassian** must be configured and authenticated under **Cursor → Settings → MCP**.
+4. **Test manually:**
+   ```powershell
+   & "$env:USERPROFILE\.cursor\skills\ado-universal-pr-review\scripts\Run-DailyAdoPrReviewBatch.ps1"
+   ```
+   ```bash
+   bash ~/.cursor/skills/ado-universal-pr-review/scripts/run-daily-ado-pr-review-batch.sh
+   ```
+5. **Schedule** (pick one platform below).
 
-**Notes**
+Logs are written to `~/.cursor/logs/ado-pr-review-batch/` (override with `ADO_PR_REVIEW_LOG_DIR`).
 
-- Requires a Cursor plan with **Cloud Agents / Automations** (Individual or Teams).
-- Automations are configured in the Cursor UI today — not yet driven by a repo file. Keep this skill as the source of truth for the prompt text.
-- If a schedule change does not take effect (known cron bug), delete and recreate the automation, or re-save after a small schedule edit.
-- Long batches (many Active PRs) may hit automation time limits; the agent should paginate PR lists and skip duplicate overviews per the skill.
+Prompt source of truth: `prompts/daily-batch.prompt.txt` in this skill folder.
 
-### Daily batch starter prompt (paste into the automation)
+### Windows — Task Scheduler (weekdays 8:00am)
+
+1. Open **Task Scheduler → Create Task**.
+2. **Trigger:** Daily, repeat every **1 day**, start **8:00:00 AM**, enable **Stop task if it runs longer than** e.g. 4 hours.
+3. On the trigger **Advanced settings**, check **On a schedule** and limit to weekdays (Mon–Fri), or create five separate weekday triggers.
+4. **Action:** Start a program
+   - **Program:** `powershell.exe`
+   - **Arguments:** `-NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\.cursor\skills\ado-universal-pr-review\scripts\Run-DailyAdoPrReviewBatch.ps1"`
+5. **Conditions:** uncheck **Start only if on AC power** if this runs on a laptop.
+6. **Settings:** allow task to run on demand; optionally **Run whether user is logged on or not** only if `agent login` / API key works in that context.
+
+### macOS / Linux — cron (weekdays 8:00am)
+
+```bash
+chmod +x ~/.cursor/skills/ado-universal-pr-review/scripts/run-daily-ado-pr-review-batch.sh
+crontab -e
+```
+
+Add:
+
+```cron
+0 8 * * 1-5 /bin/bash -lc '$HOME/.cursor/skills/ado-universal-pr-review/scripts/run-daily-ado-pr-review-batch.sh'
+```
+
+Use `launchd` on macOS if you prefer plist-based scheduling over cron.
+
+### Notes
+
+- The scheduled machine must be **on and awake** at 8:00am (local scheduling does not run while asleep or powered off).
+- Long batches (many Active PRs) may hit CLI time or token limits; the agent should paginate PR lists and skip duplicate overviews per the skill.
+- Optional in-IDE alternative when Cursor is already open: `/loop 24h` with the daily batch prompt — less reliable than cron/Task Scheduler for a fixed 8:00am time.
+
+### Daily batch starter prompt
+
+Same text as `prompts/daily-batch.prompt.txt`:
 
 ```text
 Follow skill ado-universal-pr-review. Batch-review every Active pull request in Azure DevOps project "Traffix Medallion" (Traffix-Data-Infrastructure). List with repo_list_pull_requests_by_repo_or_project (project only, status Active, paginate). For each PR, run the full review: mandatory Jira requirements cross-check when a ticket key is mapped (getJiraIssue, compare to diff, Jira requirements fit table in ADO overview), Gold FK validation when gold notebooks change, Approval recommendation with Why tied to Jira fit, post ADO threads per the skill; skip duplicate overviews when appropriate. For Approved or Approved with follow-ups, post Jira ticket comments with requirements fit. Finish with a markdown table including Approval recommendation, Jira req check, Gold FK check, Critical/High counts, and Jira comment status.
 ```
+
+## Daily morning automation (cloud — optional)
+
+If the local machine is not reliably on at 8:00am, use **Cursor Automations** at [cursor.com/automations](https://cursor.com/automations) instead:
+
+1. **New automation → Blank**
+2. **Trigger:** Scheduled — cron `0 8 * * 1-5` (weekdays) or `0 8 * * *` (daily); set timezone (e.g. `America/New_York`)
+3. **Repository:** **No repository** (MCP-only)
+4. **Tools / MCP:** enable **user-ado** and **user-atlassian**
+5. **Prompt:** paste the **Daily batch starter prompt** above
+6. **Run now** once to verify, then enable
+
+Requires a Cursor plan with **Cloud Agents / Automations**.
 
 ## Tuesday / Thursday starter prompt (manual chat — copy into a new agent chat)
 
