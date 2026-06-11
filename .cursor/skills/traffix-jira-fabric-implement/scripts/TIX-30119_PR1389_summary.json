@@ -1,0 +1,217 @@
+{
+  "workspace": "aiagent-dev-workspace",
+  "pr": 1389,
+  "ticket": "TIX-30119",
+  "validated_at": "2026-06-11T20:54:49.245183Z",
+  "status": "ok",
+  "baseline": {
+    "sales_support_1_rows": 435,
+    "fg62_rows": 435,
+    "ryan_us_sales1_rows": 21343,
+    "total_rows": 1319938
+  },
+  "after": {
+    "sales_support_1_rows": 0,
+    "fg62_rows": 0,
+    "ryan_fg2_rows": 99763,
+    "ryan_us_sales1_rows": 21343,
+    "total_rows": 1319938
+  },
+  "excluded_counts": {
+    "Sales Support 1": 0,
+    "ALTERNATE SALES CANADA": 0,
+    "ALTERNATE SALES USA": 0
+  },
+  "checks": {
+    "sales_support_1_zero": true,
+    "fg62_zero": true,
+    "excluded_Sales_Support_1_zero": true,
+    "excluded_ALTERNATE_SALES_CANADA_zero": true,
+    "excluded_ALTERNATE_SALES_USA_zero": true
+  },
+  "assertions_passed": true,
+  "samples": [
+    {
+      "load_key": 2277856,
+      "primary_sales_rep_key": 3089,
+      "sales_rep_name": "Ryan Lewin",
+      "functional_group_key": 2,
+      "functional_group": "ALTERNATE SALES USA",
+      "customer_key": 1865271
+    },
+    {
+      "load_key": 2277855,
+      "primary_sales_rep_key": 3089,
+      "sales_rep_name": "Ryan Lewin",
+      "functional_group_key": 2,
+      "functional_group": "ALTERNATE SALES USA",
+      "customer_key": 1865271
+    },
+    {
+      "load_key": 2277854,
+      "primary_sales_rep_key": 3089,
+      "sales_rep_name": "Ryan Lewin",
+      "functional_group_key": 2,
+      "functional_group": "ALTERNATE SALES USA",
+      "customer_key": 1865271
+    },
+    {
+      "load_key": 2277853,
+      "primary_sales_rep_key": 3089,
+      "sales_rep_name": "Ryan Lewin",
+      "functional_group_key": 2,
+      "functional_group": "ALTERNATE SALES USA",
+      "customer_key": 1865271
+    },
+    {
+      "load_key": 2277852,
+      "primary_sales_rep_key": 3089,
+      "sales_rep_name": "Ryan Lewin",
+      "functional_group_key": 2,
+      "functional_group": "ALTERNATE SALES USA",
+      "customer_key": 1865271
+    },
+    {
+      "load_key": 2277851,
+      "primary_sales_rep_key": 3089,
+      "sales_rep_name": "Ryan Lewin",
+      "functional_group_key": 2,
+      "functional_group": "ALTERNATE SALES USA",
+      "customer_key": 1865271
+    },
+    {
+      "load_key": 2277850,
+      "primary_sales_rep_key": 3089,
+      "sales_rep_name": "Ryan Lewin",
+      "functional_group_key": 2,
+      "functional_group": "ALTERNATE SALES USA",
+      "customer_key": 1865271
+    },
+    {
+      "load_key": 2277849,
+      "primary_sales_rep_key": 3089,
+      "sales_rep_name": "Ryan Lewin",
+      "functional_group_key": 2,
+      "functional_group": "ALTERNATE SALES USA",
+      "customer_key": 1865271
+    },
+    {
+      "load_key": 2277848,
+      "primary_sales_rep_key": 3089,
+      "sales_rep_name": "Ryan Lewin",
+      "functional_group_key": 2,
+      "functional_group": "ALTERNATE SALES USA",
+      "customer_key": 1865271
+    },
+    {
+      "load_key": 2277806,
+      "primary_sales_rep_key": 3089,
+      "sales_rep_name": "Ryan Lewin",
+      "functional_group_key": 2,
+      "functional_group": "ALTERNATE SALES USA",
+      "customer_key": 1858211
+    },
+    {
+      "load_key": 2277792,
+      "primary_sales_rep_key": 2096,
+      "sales_rep_name": "Kiran Narayansingh",
+      "functional_group_key": 1,
+      "functional_group": "ALTERNATE SALES CANADA",
+      "customer_key": 1848967
+    },
+    {
+      "load_key": 2277767,
+      "primary_sales_rep_key": 2096,
+      "sales_rep_name": "Kiran Narayansingh",
+      "functional_group_key": 1,
+      "functional_group": "ALTERNATE SALES CANADA",
+      "customer_key": 1848967
+    },
+    {
+      "load_key": 2277766,
+      "primary_sales_rep_key": 2096,
+      "sales_rep_name": "Kiran Narayansingh",
+      "functional_group_key": 1,
+      "functional_group": "ALTERNATE SALES CANADA",
+      "customer_key": 1848967
+    },
+    {
+      "load_key": 2277764,
+      "primary_sales_rep_key": 2096,
+      "sales_rep_name": "Kiran Narayansingh",
+      "functional_group_key": 1,
+      "functional_group": "ALTERNATE SALES CANADA",
+      "customer_key": 1848967
+    },
+    {
+      "load_key": 2277763,
+      "primary_sales_rep_key": 2096,
+      "sales_rep_name": "Kiran Narayansingh",
+      "functional_group_key": 1,
+      "functional_group": "ALTERNATE SALES CANADA",
+      "customer_key": 1848967
+    }
+  ],
+  "top_reps": [
+    {
+      "primary_sales_rep_key": 3631,
+      "full_name": "Tom Brandtner",
+      "functional_group": "GS Sales Team 1",
+      "count": 349364
+    },
+    {
+      "primary_sales_rep_key": -1,
+      "full_name": null,
+      "functional_group": "Undefined",
+      "count": 108179
+    },
+    {
+      "primary_sales_rep_key": 1777,
+      "full_name": "Jessica Hart",
+      "functional_group": "GS Sales Team 1",
+      "count": 101289
+    },
+    {
+      "primary_sales_rep_key": 3089,
+      "full_name": "Ryan Lewin",
+      "functional_group": "ALTERNATE SALES USA",
+      "count": 99763
+    },
+    {
+      "primary_sales_rep_key": 3099,
+      "full_name": "Robert Mielke",
+      "functional_group": "South Central Apex  1",
+      "count": 47187
+    },
+    {
+      "primary_sales_rep_key": 39,
+      "full_name": "Andrew Bates",
+      "functional_group": "Ontario Growth Team 1",
+      "count": 44858
+    },
+    {
+      "primary_sales_rep_key": 2096,
+      "full_name": "Kiran Narayansingh",
+      "functional_group": "ALTERNATE SALES CANADA",
+      "count": 38806
+    },
+    {
+      "primary_sales_rep_key": 1697,
+      "full_name": "John Cathcart",
+      "functional_group": "Central Canada Apex 1",
+      "count": 29555
+    },
+    {
+      "primary_sales_rep_key": 1434,
+      "full_name": "Hunter Banks",
+      "functional_group": "Chicago Growth Team 2",
+      "count": 23434
+    },
+    {
+      "primary_sales_rep_key": 910,
+      "full_name": "Dan Coberley",
+      "functional_group": "Chicago Growth Team 2",
+      "count": 21696
+    }
+  ]
+}

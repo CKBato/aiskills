@@ -1,0 +1,22 @@
+{
+  "jira": {
+    "cloudId": "2d0b86b9-1fbf-4e1e-a322-8645bf37910f",
+    "site": "https://traffixsupport.atlassian.net",
+    "projectKey": "TIX"
+  },
+  "azureDevOps": {
+    "organization": "Traffix-Data-Infrastructure",
+    "project": "Traffix Medallion",
+    "repository": "Traffix Medallion Production",
+    "repositoryId": "5c949b12-f510-4039-b9b7-59d6d5326875"
+  },
+  "fabric": {
+    "productionWorkspaceName": "Traffix-Medallion-Production",
+    "defaultValidationWorkspace": "TIX-28531-Dimension-Undefined",
+    "readOnlyLakehouseVars": [
+      "production_lakehouse_silver_abfss",
+      "production_lakehouse_gold_abfss",
+      "production_lakehouse_bronze_abfss"
+    ]
+  }
+}

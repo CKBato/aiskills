@@ -1,0 +1,24 @@
+{
+  "jira": {
+    "cloudId": "traffixsupport.atlassian.net",
+    "projectKey": "TIX"
+  },
+  "azureDevOps": {
+    "organization": "Traffix-Data-Infrastructure",
+    "organizationUrl": "https://dev.azure.com/Traffix-Data-Infrastructure",
+    "project": "Traffix Medallion",
+    "repository": "Traffix Medallion Production",
+    "repositoryId": "5c949b12-f510-4039-b9b7-59d6d5326875",
+    "defaultTargetBranch": "main",
+    "branchPattern": "feature/TIX-{key}-{shortDescription}"
+  },
+  "fabric": {
+    "workspaceNamePattern": "TIX-{key}-{shortDescription}",
+    "notebookRunJobType": "RunNotebook",
+    "apiBase": "https://api.fabric.microsoft.com/v1"
+  },
+  "naming": {
+    "shortDescriptionMaxWords": 4,
+    "shortDescriptionSeparator": "-"
+  }
+}
