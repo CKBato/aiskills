@@ -13,7 +13,8 @@
         "repositories"
       ],
       "env": {
-        "ado_mcp_project": "Traffix Medallion"
+        "ado_mcp_project": "Traffix Medallion",
+        "PERSONAL_ACCESS_TOKEN": "${env:PERSONAL_ACCESS_TOKEN}"
       }
     },
     "user-atlassian": {

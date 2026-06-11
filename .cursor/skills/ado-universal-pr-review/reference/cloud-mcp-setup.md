@@ -138,7 +138,7 @@ getJiraIssue for TIX-1 (or any known ticket) with responseContentFormat markdown
 
 ## 4. Local desktop MCP (optional mirror)
 
-For the same tool names in interactive Cursor chats, add equivalent entries to `~/.cursor/mcp.json` or project `.cursor/mcp.json`. Desktop can use **interactive** ADO auth (browser login) instead of PAT:
+For the same tool names in interactive Cursor chats, add equivalent entries to `~/.cursor/mcp.json` or project `.cursor/mcp.json`. The committed project config uses PAT auth and reads `PERSONAL_ACCESS_TOKEN` from the Cursor process environment via `${env:PERSONAL_ACCESS_TOKEN}`:
 
 ```json
 {
@@ -154,7 +154,8 @@ For the same tool names in interactive Cursor chats, add equivalent entries to `
         "repositories"
       ],
       "env": {
-        "ado_mcp_project": "Traffix Medallion"
+        "ado_mcp_project": "Traffix Medallion",
+        "PERSONAL_ACCESS_TOKEN": "${env:PERSONAL_ACCESS_TOKEN}"
       }
     },
     "user-atlassian": {
