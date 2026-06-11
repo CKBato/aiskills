@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "user-ado": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@azure-devops/mcp",
+        "Traffix-Data-Infrastructure",
+        "--authentication",
+        "pat",
+        "-d",
+        "core",
+        "repositories"
+      ],
+      "env": {
+        "ado_mcp_project": "Traffix Medallion"
+      }
+    },
+    "user-atlassian": {
+      "url": "https://mcp.atlassian.com/v1/mcp"
+    }
+  }
+}

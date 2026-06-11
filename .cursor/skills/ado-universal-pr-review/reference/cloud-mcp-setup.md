@@ -4,6 +4,26 @@ Configure **user-ado** and **user-atlassian** in the **Cloud Agents** dashboard 
 
 Traffix defaults are in [config.json](../config.json). Example JSON to paste is in [mcp.cloud-agents.example.json](../mcp.cloud-agents.example.json).
 
+**Repo artifacts (merged in aiskills):**
+
+| File | Purpose |
+|------|---------|
+| [../../../mcp.json](../../../mcp.json) | Project MCP template (no secrets); mirror in dashboard |
+| [../../../cloud-agent-secrets.example.env](../../../cloud-agent-secrets.example.env) | Secret names for Cursor Dashboard |
+| [../scripts/configure-cloud-agent-mcp.sh](../scripts/configure-cloud-agent-mcp.sh) | Generate dashboard JSON from your ADO PAT |
+| [../scripts/Configure-CloudAgentMcp.ps1](../scripts/Configure-CloudAgentMcp.ps1) | Same, PowerShell |
+
+**Fast path:** run the setup script locally with your PAT, paste the printed JSON into the dashboard, complete Atlassian OAuth, Run now on a test agent.
+
+```powershell
+$env:ADO_RAW_PAT = 'YOUR_RAW_PAT'
+& "$env:USERPROFILE\.cursor\skills\ado-universal-pr-review\scripts\Configure-CloudAgentMcp.ps1"
+```
+
+```bash
+ADO_RAW_PAT='YOUR_RAW_PAT' bash ~/.cursor/skills/ado-universal-pr-review/scripts/configure-cloud-agent-mcp.sh
+```
+
 ## Where to configure
 
 Cloud Agents do **not** reliably inherit your desktop `~/.cursor/mcp.json`. Add MCP servers in the dashboard:
