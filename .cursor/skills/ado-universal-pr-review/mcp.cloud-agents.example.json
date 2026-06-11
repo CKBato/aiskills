@@ -1,0 +1,25 @@
+{
+  "_comment": "Copy each server into the Cloud Agents MCP dashboard. Do NOT commit real tokens. Replace YOUR_* placeholders before pasting.",
+  "mcpServers": {
+    "user-ado": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@azure-devops/mcp",
+        "Traffix-Data-Infrastructure",
+        "--authentication",
+        "pat",
+        "-d",
+        "core",
+        "repositories"
+      ],
+      "env": {
+        "ado_mcp_project": "Traffix Medallion",
+        "PERSONAL_ACCESS_TOKEN": "YOUR_BASE64_ENCODED_EMAIL_COLON_PAT"
+      }
+    },
+    "user-atlassian": {
+      "url": "https://mcp.atlassian.com/v1/mcp"
+    }
+  }
+}

@@ -83,6 +83,8 @@ Cursor does not run on a calendar by itself in a normal chat — use **local sch
 - **user-atlassian** MCP enabled and authenticated (for Jira requirements fetch and approval comments).
 - Inputs: PR URL **or** (`project`, `repositoryId` / name, `pullRequestId`). For batch: `project` only.
 
+**Cloud Agents:** configure both MCP servers in the [Cloud Agents MCP dashboard](https://cursor.com/agents) before enabling a scheduled automation. Full steps: [reference/cloud-mcp-setup.md](reference/cloud-mcp-setup.md). Example config: [mcp.cloud-agents.example.json](mcp.cloud-agents.example.json). Traffix org/project/Jira IDs: [config.json](config.json).
+
 ## Tooling (read MCP tool JSON schemas before first use in a session)
 
 | Goal | Tool |
@@ -422,14 +424,29 @@ Follow skill ado-universal-pr-review. Batch-review every Active pull request in 
 
 ## Daily morning automation (cloud — optional)
 
-If the local machine is not reliably on at 8:00am, use **Cursor Automations** at [cursor.com/automations](https://cursor.com/automations) instead:
+If the local machine is not reliably on at 8:00am, use **Cursor Automations** at [cursor.com/automations](https://cursor.com/automations) instead.
+
+### Cloud Agent MCP (required first)
+
+Before scheduling, set up **user-ado** and **user-atlassian** in the Cloud Agents MCP dashboard. See **[reference/cloud-mcp-setup.md](reference/cloud-mcp-setup.md)** for PAT creation, base64 encoding, OAuth, and verification prompts.
+
+Quick summary:
+
+| MCP | Type | Auth |
+|-----|------|------|
+| **user-ado** | stdio — `npx @azure-devops/mcp Traffix-Data-Infrastructure` with `-d core repositories` | ADO PAT in `PERSONAL_ACCESS_TOKEN` (base64 `email:pat`) |
+| **user-atlassian** | HTTP — `https://mcp.atlassian.com/v1/mcp` | OAuth in dashboard |
+
+Paste from [mcp.cloud-agents.example.json](mcp.cloud-agents.example.json) (replace placeholders; never commit real tokens).
+
+### Create the automation
 
 1. **New automation → Blank**
 2. **Trigger:** Scheduled — cron `0 8 * * 1-5` (weekdays) or `0 8 * * *` (daily); set timezone (e.g. `America/New_York`)
 3. **Repository:** **No repository** (MCP-only)
 4. **Tools / MCP:** enable **user-ado** and **user-atlassian**
 5. **Prompt:** paste the **Daily batch starter prompt** above
-6. **Run now** once to verify, then enable
+6. **Run now** once to verify MCP auth and posting, then enable
 
 Requires a Cursor plan with **Cloud Agents / Automations**.
 
