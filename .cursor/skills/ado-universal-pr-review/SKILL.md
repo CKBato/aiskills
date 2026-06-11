@@ -11,8 +11,9 @@ description: >-
   user-atlassian MCP when Approved or Approved with follow-ups. Use for
   dev.azure.com PR links,
   requests to review PRs,
-  Tuesday/Thursday batch review of all Active PRs in Traffix Medallion, or
-  Traffix Medallion project-wide PR sweeps.
+  Tuesday/Thursday batch review of all Active PRs in Traffix Medallion,
+  Traffix Medallion project-wide PR sweeps, or daily morning Cursor
+  Automations batch review at 8:00am.
 disable-model-invocation: false
 ---
 
@@ -74,7 +75,7 @@ If they name another org/project, use theirs instead.
 - **Single-PR mode:** one pull request end-to-end.
 - **Batch mode (e.g. Tuesday / Thursday):** list **all Active** PRs in Traffix Medallion (across repos), then run **single-PR mode** for each. Work in repository order returned by the API; paginate with `top` / `skip` if there are more than 100 PRs.
 
-Cursor does not run on a calendar by itself: on Tuesdays and Thursdays the user starts a chat and invokes this workflow (or relies on auto-invocation from the skill description).
+Cursor does not run on a calendar by itself in a normal chat — use **Cursor Automations** (see below) for a daily schedule, or on Tuesdays/Thursdays start a chat and invoke this workflow manually (or rely on auto-invocation from the skill description).
 
 ## Preconditions
 
@@ -354,7 +355,39 @@ Optional duplicate under **Cursor → Settings → Rules → User Rules** if you
 When I ask to review Azure DevOps (ADO) pull requests, paste a dev.azure.com PR link, or mention Traffix Medallion PRs, follow the skill ado-universal-pr-review: use user-ado MCP; always map Jira from PR description/title when present, fetch the ticket via user-atlassian MCP, and cross-check ticket requirements against the PR diff (and related repo artifacts) before choosing Approval recommendation; include a Jira requirements fit table and tie Why (recommendation) to that fit in every ADO overview; post overview with Approval recommendation, Gold FK/surrogate-key check for gold notebooks (**Fail on missing coalesce(...,-1) on *_key outputs = Not Approved hard gate, including bridge tables**), semantic model guardrails when applicable (**ado-semantic-model-pr-review**; **Fail on placeholder/missing `.platform` `logicalId` e.g. `00000000-…` = Not Approved hard gate**), Critical/high issues; default project Traffix Medallion when not specified; post on the PR unless chat-only; for Approved or Approved with follow-ups also post a short requirements-fit comment on the mapped Jira ticket; do not cast ADO votes unless I ask.
 ```
 
-## Tuesday / Thursday starter prompt (copy into a new agent chat)
+## Daily morning automation (Cursor Automations — recommended)
+
+Use a **scheduled Cursor Automation** to batch-review every Active PR each weekday morning without starting a chat manually.
+
+### Setup (one time)
+
+1. Open **[cursor.com/automations](https://cursor.com/automations)** (or **Agents → Automations** in the IDE).
+2. **New automation → Blank** (or duplicate an existing ADO review automation if you have one).
+3. **Trigger:** Scheduled
+   - **Weekdays 8:00am:** cron `0 8 * * 1-5` (Mon–Fri)
+   - **Every day 8:00am:** cron `0 8 * * *`
+   - Set **timezone** to your team default (e.g. `America/New_York` for US Eastern).
+4. **Repository:** **No repository** — this workflow uses ADO/Jira MCP only (no code edits or PRs from the agent).
+5. **Tools / MCP:** enable **user-ado** and **user-atlassian** (both must be authenticated in Cursor before the automation runs).
+6. **Prompt:** paste the **Daily batch starter prompt** below.
+7. **Save → Run now** once to verify MCP auth and posting; then leave enabled.
+
+**Notes**
+
+- Requires a Cursor plan with **Cloud Agents / Automations** (Individual or Teams).
+- Automations are configured in the Cursor UI today — not yet driven by a repo file. Keep this skill as the source of truth for the prompt text.
+- If a schedule change does not take effect (known cron bug), delete and recreate the automation, or re-save after a small schedule edit.
+- Long batches (many Active PRs) may hit automation time limits; the agent should paginate PR lists and skip duplicate overviews per the skill.
+
+### Daily batch starter prompt (paste into the automation)
+
+```text
+Follow skill ado-universal-pr-review. Batch-review every Active pull request in Azure DevOps project "Traffix Medallion" (Traffix-Data-Infrastructure). List with repo_list_pull_requests_by_repo_or_project (project only, status Active, paginate). For each PR, run the full review: mandatory Jira requirements cross-check when a ticket key is mapped (getJiraIssue, compare to diff, Jira requirements fit table in ADO overview), Gold FK validation when gold notebooks change, Approval recommendation with Why tied to Jira fit, post ADO threads per the skill; skip duplicate overviews when appropriate. For Approved or Approved with follow-ups, post Jira ticket comments with requirements fit. Finish with a markdown table including Approval recommendation, Jira req check, Gold FK check, Critical/High counts, and Jira comment status.
+```
+
+## Tuesday / Thursday starter prompt (manual chat — copy into a new agent chat)
+
+Same workflow as the daily automation; use when you want an ad-hoc batch outside the schedule:
 
 ```text
 Follow skill ado-universal-pr-review. Batch-review every Active pull request in Azure DevOps project "Traffix Medallion" (Traffix-Data-Infrastructure). List with repo_list_pull_requests_by_repo_or_project (project only, status Active, paginate). For each PR, run the full review: mandatory Jira requirements cross-check when a ticket key is mapped (getJiraIssue, compare to diff, Jira requirements fit table in ADO overview), Gold FK validation when gold notebooks change, Approval recommendation with Why tied to Jira fit, post ADO threads per the skill; skip duplicate overviews when appropriate. For Approved or Approved with follow-ups, post Jira ticket comments with requirements fit. Finish with a markdown table including Approval recommendation, Jira req check, Gold FK check, Critical/High counts, and Jira comment status.
